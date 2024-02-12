@@ -1,11 +1,7 @@
-const { db } = require('@vercel/postgres');
-const {
-  invoices,
-  customers,
-  revenue,
-  users,
-} = require('../app/lib/placeholder-data.js');
-const bcrypt = require('bcrypt');
+const {db} = require('@vercel/postgres');
+const { invoices, customers, revenue, users } = require('../app/lib/placeholder-data.js');
+const newLocal = require('bcrypt');
+const { hash } = newLocal;
 
 async function seedUsers(client) {
   try {
@@ -25,7 +21,7 @@ async function seedUsers(client) {
     // Insert data into the "users" table
     const insertedUsers = await Promise.all(
       users.map(async (user) => {
-        const hashedPassword = await bcrypt.hash(user.password, 10);
+        const hashedPassword = await hash(user.password, 10);
         return client.sql`
         INSERT INTO users (id, name, email, password)
         VALUES (${user.id}, ${user.name}, ${user.email}, ${hashedPassword})
